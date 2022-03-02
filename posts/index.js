@@ -1,20 +1,23 @@
 const express = require('express');
-const bodyParser = require('body-parser')
-const {randomBytes} = require('crypto')
+const bodyParser = require('body-parser');
+const { randomBytes } = require('crypto');
 const app = express();
+const cors = require('cors');
+
 const port = 4000;
+
+app.use(bodyParser.json());
+app.use(cors());
 
 const posts = {};
 
-app.use(bodyParser.json());
-
-app.get('/', (req, res)=>{
+app.get('/posts', (req, res) => {
     res.send(posts);
 })
 
-app.post('/posts', (req, res)=> {
+app.post('/posts', (req, res) => {
     const id = randomBytes(4).toString('hex');
-    const {title} = req.body;
+    const { title } = req.body;
 
     posts[id] = {
         id, title
@@ -23,6 +26,6 @@ app.post('/posts', (req, res)=> {
     res.status(201).send(posts[id]);
 })
 
-app.listen(port, ()=>{
+app.listen(port, () => {
     console.log(`Post service is listening on port : ${port}`);
 })
